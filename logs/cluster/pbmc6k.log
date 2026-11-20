@@ -1,0 +1,17 @@
+/home/jaime/snakemake_scrna/.snakemake/conda/ecf4f58f6c5390bfc45ad979af225462_/lib/python3.12/functools.py:912: UserWarning: zero-centering a sparse array/matrix densifies it.
+  return dispatch(args[0].__class__)(*args, **kw)
+12 Leiden clusters
+Cluster annotation:
+leiden
+0               CD4 T
+1               CD4 T
+2       CD14 Monocyte
+3               CD8 T
+4                   B
+5           Dendritic
+6     FCGR3A Monocyte
+7                  NK
+8           Dendritic
+9            Platelet
+10                 NK
+11                  B

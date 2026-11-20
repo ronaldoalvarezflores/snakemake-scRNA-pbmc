@@ -1,0 +1,31 @@
+# Samples: name -> download URL of the 10x filtered count matrix (matrix.mtx, genes.tsv, barcodes.tsv)
+# To add a sample, add one line here.
+samples:
+  pbmc3k: "https://cf.10xgenomics.com/samples/cell-exp/1.1.0/pbmc3k/pbmc3k_filtered_gene_bc_matrices.tar.gz"
+  pbmc6k: "https://cf.10xgenomics.com/samples/cell-exp/1.1.0/pbmc6k/pbmc6k_filtered_gene_bc_matrices.tar.gz"
+
+# Preprocessing
+min_genes: 200        # drop cells with fewer detected genes
+min_cells: 3          # drop genes seen in fewer cells
+max_pct_mt: 5         # drop cells with more % mitochondrial reads
+
+# Analysis
+n_top_genes: 2000     # highly variable genes
+n_pcs: 40
+n_neighbors: 10
+resolution: 1.0       # Leiden resolution (higher = more clusters)
+
+# Resources
+threads: 4
+mem_mb: 4000          # memory for the first attempt; doubled, tripled... on retries
+
+# Marker genes used to annotate clusters
+markers:
+  CD4 T: [IL7R, LDHB, CD3E]
+  CD8 T: [CD8A, CD8B]
+  NK: [GNLY, KLRF1, KLRD1]
+  B: [MS4A1, CD79A, CD79B]
+  CD14 Monocyte: [CD14, LYZ, S100A9]
+  FCGR3A Monocyte: [FCGR3A, MS4A7]
+  Dendritic: [FCER1A, CST3]
+  Platelet: [PPBP, PF4]

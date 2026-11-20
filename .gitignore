@@ -1,0 +1,11 @@
+# Snakemake metadata and conda environments
+.snakemake/
+
+# Downloaded data and large intermediate files (recreated by the workflow)
+data/
+*.h5ad
+
+# Old local copy of the pbmc3k matrix (the workflow downloads it)
+/barcodes.tsv
+/genes.tsv
+/matrix.mtx
