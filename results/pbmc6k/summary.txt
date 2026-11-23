@@ -1,4 +1,4 @@
 sample: pbmc6k
-cells (barcodes): 5419
-genes: 32738
+cells (barcodes):     5419
+genes:    32738
 md5 matrix.mtx: 6444847dd29d127598a6ea67fd320e35

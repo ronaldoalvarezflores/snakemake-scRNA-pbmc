@@ -3,10 +3,27 @@
 Exercise 2 (scRNA-seq Analysis Pipeline), Computer and Software Architectures, FHNW.
 Authors: Jaime López Balandín, Ronaldo Alvarez Flores
 
-A Snakemake workflow that downloads 10x Genomics count matrices, filters and normalises them,
-clusters the cells, annotates cell types from marker genes and draws a UMAP, for any number of samples.
+A reproducible Snakemake workflow that downloads 10x Genomics count matrices, performs quality control and normalization, clusters cells, annotates cell types from marker genes and generates UMAP and marker visualizations for any number of samples.
 
 ![UMAP pbmc3k](results/pbmc3k/umap.png)
+
+## Project objective
+
+Build a reproducible Snakemake workflow for PBMC
+single-cell RNA-seq analysis.
+
+The workflow automatically performs:
+
+1. Data download
+2. Quality control
+3. Filtering
+4. Normalization
+5. Highly variable gene selection
+6. PCA
+7. Leiden clustering
+8. Cell-type annotation
+9. UMAP visualization
+10. Marker visualization
 
 ## Datasets
 
@@ -43,13 +60,13 @@ so no data files need to be supplied.
 - **No absolute paths:** all paths are relative to the project folder, and the data is downloaded from a URL, so the workflow runs on any machine.
 - **Shell commands and scripts:** `get_data` and `summary` are shell rules; `preprocess`, `cluster` and `plot` run Python scripts through `script:`.
 - **Conda environment:** `envs/scanpy.yaml` (Python 3.12, Scanpy, igraph, leidenalg, matplotlib), built automatically with `--use-conda`.
-- **Threads and resources:** `cluster` uses `threads:` (passed to Scanpy). `preprocess` and `cluster` request memory with `mem_mb=lambda wc, attempt: attempt * config["mem_mb"]` and have `retries: 3`, so a job that fails (e.g. out of memory) is retried with 2×, then 3×, then 4× the memory.
-- **Logs and benchmarks:** each rule writes to `logs/`; `preprocess` and `cluster` record runtime and memory in `benchmarks/`.
+- **Threads and resources:** `cluster` uses `threads:` and `preprocess`/`cluster` request memory with `mem_mb=lambda wc, attempt: attempt * config["mem_mb"]`. They also use `retries: 3`, so failed jobs can be retried with progressively larger memory allocations.
+- **Logs and benchmarks:** the analysis rules write execution logs, while `preprocess` and `cluster` also record runtime and resource usage in `benchmarks/`. These generated files are excluded from GitHub by `.gitignore`.
 - **DAG:** `dag.png` and `rulegraph.png`.
 
 ## How to run
 
-Requires conda (e.g. Miniforge) on Linux or WSL, and an internet connection for the download.
+Requires Conda/Mamba (e.g. Miniforge) and an internet connection for the data download. The workflow uses relative paths and creates its Scanpy environment automatically with Snakemake.
 
 ```bash
 # 1. Environment with Snakemake and Graphviz (once)
@@ -67,6 +84,15 @@ snakemake --rulegraph | dot -Tpng > rulegraph.png
 # Optional: override a parameter without editing the config
 snakemake --cores 4 --use-conda --config resolution=0.5
 ```
+
+## Reproducibility
+
+The repository contains the workflow definition, configuration, scripts, Conda environment,
+DAG/rule graph and final figures. Raw downloaded data and intermediate `.h5ad` files are
+not committed to GitHub because of their size; they are recreated automatically by the workflow.
+
+The analysis is parameterised through `config/config.yaml`, so changing filtering thresholds,
+clustering resolution or marker genes does not require modifying the Python scripts.
 
 ## Results
 
@@ -93,16 +119,28 @@ still get the best-scoring label, which may not be meaningful.
 
 ## Folder contents
 
-```
+```text
 Snakefile
 config/config.yaml
 envs/scanpy.yaml
-scripts/preprocess.py, cluster.py, plot.py
-results/{pbmc3k,pbmc6k}/umap.png, markers.png, summary.txt
-logs/, benchmarks/
-dag.png, rulegraph.png
+scripts/preprocess.py
+scripts/cluster.py
+scripts/plot.py
+results/{pbmc3k,pbmc6k}/umap.png
+results/{pbmc3k,pbmc6k}/markers.png
+results/{pbmc3k,pbmc6k}/summary.txt
+dag.png
+rulegraph.png
 test.txt
 ```
 
-The downloaded data (`data/`) and the intermediate `.h5ad` files are not included because of their size;
+Generated logs and benchmarks are kept locally during execution but excluded from GitHub.
+The downloaded data (`data/`) and intermediate `.h5ad` files are also excluded because of their size;
 running the workflow recreates them.
+
+
+## Conclusion
+
+This project demonstrates a complete reproducible scRNA-seq workflow rather than a collection
+of independent scripts: Snakemake manages dependencies, parameters, environments and resources,
+while Scanpy performs the single-cell analysis.

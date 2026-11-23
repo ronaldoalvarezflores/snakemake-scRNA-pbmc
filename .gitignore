@@ -1,11 +1,14 @@
 # Snakemake metadata and conda environments
 .snakemake/
+.venv/
 
-# Downloaded data and large intermediate files (recreated by the workflow)
+# macOS
+.DS_Store
+
+# Downloaded data and large intermediate files
 data/
 *.h5ad
 
-# Old local copy of the pbmc3k matrix (the workflow downloads it)
-/barcodes.tsv
-/genes.tsv
-/matrix.mtx
+# Workflow logs and benchmarks
+logs/
+benchmarks/

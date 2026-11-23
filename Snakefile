@@ -7,7 +7,8 @@ rule all:
     input:
         expand("results/{sample}/umap.png", sample=SAMPLES),
         expand("results/{sample}/markers.png", sample=SAMPLES),
-        expand("results/{sample}/summary.txt", sample=SAMPLES)
+        expand("results/{sample}/summary.txt", sample=SAMPLES),
+        "test.txt"
 
 
 # Shell rule: download the 10x count matrix of one sample and unpack it
